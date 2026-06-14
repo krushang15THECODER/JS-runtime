@@ -90,7 +90,7 @@ Runtime Engine (JS semantics layer)
 Python Execution (exec sandbox)
         ↓
 Output Renderer (CLI / REPL / Web)
-
+```
 Core Files:
 
 ```txt
