@@ -5,15 +5,103 @@ A custom-built **Mini JavaScript Interpreter / Runtime in Python** created for *
 ThunderJS Runtime accepts JavaScript code as input, translates it into executable Python, and executes it while preserving JavaScript-like behavior.
 
 ---
+# This Project Contains 2 modes :1.Web IDE 2.CLI mode 
+---
+## 🚀 Getting Started
 
-# 🌐 Live Demo
-
-**Try it here:**
-
-https://js-runtime-p4du.onrender.com/
+### 📦 1. Clone the Repository
+```bash
+git clone https://github.com/krushang15THECODER/JS-runtime.git
+cd JS-runtime
+```
 
 ---
 
+### 📥 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## ▶️ Run ThunderJS Runtime
+
+### 📄 File Execution Mode(To run a whole file)
+Run a JavaScript file using the interpreter:
+
+```bash
+python main.py test.js
+```
+
+---
+
+### 🧪 REPL Mode (Interactive Shell)(To run argument by argument)
+Start a live JavaScript terminal:
+
+```bash
+python main.py --repl
+```
+
+Example:
+
+```bash
+JS > let x = 10;
+JS > console.log(x);
+10
+JS > exit
+```
+
+---
+
+## 🌐 Web Version
+
+Open in browser:
+
+https://js-runtime-p4du.onrender.com/
+
+Features:
+- Code editor
+- Run button
+- Live output terminal
+- No setup required
+
+---
+
+## ⚡ Quick Summary
+
+| Mode | Command | Use Case |
+|------|--------|----------|
+| 📄 File Mode | `python main.py file.js` | Run full programs |
+| 🧪 REPL Mode | `python main.py --repl` | Interactive testing |
+| 🌐 Web Mode | Open link | Browser-based IDE |
+```
+---
+# 🏗️ Architecture
+
+ThunderJS Runtime follows a lightweight **compiler-style pipeline**:
+
+```txt
+JavaScript Code
+        ↓
+Parser + Translator (JS → Python)
+        ↓
+Runtime Engine (JS semantics layer)
+        ↓
+Python Execution (exec sandbox)
+        ↓
+Output Renderer (CLI / REPL / Web)
+
+Core Files:
+
+```txt
+app.py
+main.py
+translator.py
+runtime.py
+templates/index.html
+```
+
+---
 # 🎯 Project Goal
 
 Instead of writing JavaScript, the challenge was to **build something that can run JavaScript**.
@@ -326,47 +414,6 @@ Supported:
 ```js
 let copy = [...arr];
 ```
-
----
-
-# 🖥️ Interactive Web IDE
-
-ThunderJS Runtime includes a custom **browser-based IDE** with:
-
-✅ Code editor
-✅ Interactive terminal output
-✅ Flask backend integration
-✅ Real-time JavaScript execution
-✅ Execution timing
-✅ Runtime status monitoring
-
----
-
-# 🏗️ Architecture
-
-```txt
-JavaScript Code
-       ↓
-Translator (JS → Python)
-       ↓
-Runtime Layer
-(JavaScript Semantics)
-       ↓
-Python Execution Engine
-       ↓
-Console Output
-```
-
-Core Files:
-
-```txt
-app.py
-main.py
-translator.py
-runtime.py
-templates/index.html
-```
-
 ---
 
 # 🛠️ Tech Stack
