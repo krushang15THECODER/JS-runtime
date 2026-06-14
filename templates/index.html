@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ NEXUS//VM — Next-Gen JavaScript Execution Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Design System & Color Tokens --- */
+        :root {
+            --bg-deep: #05070f;
+            --bg-surface: rgba(13, 17, 30, 0.45);
+            --bg-card: rgba(18, 24, 43, 0.7);
+            --bg-input: #090d16;
+            
+            /* High-Fidelity Cyberpunk Palette */
+            --primary: #00ffb3;
+            --primary-glow: rgba(0, 255, 179, 0.35);
+            --secondary: #38bdf8;
+            --secondary-glow: rgba(56, 189, 248, 0.35);
+            --accent-purple: #bd34fe;
+            --warning: #fbbf24;
+            --error: #f87171;
+            
+            /* Typography & Borders */
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --border-glow: rgba(255, 255, 255, 0.05);
+            --border-active: rgba(0, 255, 179, 0.4);
+            
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --transition-premium: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* --- Global Reset & Background Texture --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Cyber Orbs and Vector Grid Mesh */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ambient-glow-1 {
+            position: fixed;
+            top: -10%;
+            left: 20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 255, 179, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 12s ease-in-out infinite alternate;
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -10%;
+            right: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(189, 52, 254, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 16s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 30px) scale(1.1); }
+        }
+
+        /* --- Premium Navigation Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            background: rgba(5, 7, 15, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-mark {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -1px;
+            position: relative;
+        }
+
+        .logo-mark::after {
+            content: 'VM';
+            font-size: 0.65rem;
+            vertical-align: super;
+            margin-left: 2px;
+            color: var(--secondary);
+            -webkit-text-fill-color: var(--secondary);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+
+        /* Live Runtime Telemetry Panel */
+        .telemetry-strip {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glow);
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 179, 0.08);
+            border: 1px solid rgba(0, 255, 179, 0.2);
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulse-active 2s infinite;
+        }
+
+        @keyframes pulse-active {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 14px var(--primary); }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        /* --- Hero Header Block --- */
+        .hero-banner {
+            text-align: center;
+            padding: 2.5rem 2rem 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-banner h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-banner p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- Main App Core Layout --- */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+            padding: 1.5rem 3rem 3rem;
+            flex: 1;
+            max-width: 1700px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Glassmorphic Containers --- */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transition: var(--transition-premium);
+        }
+
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel:focus-within {
+            border-color: var(--border-active);
+            box-shadow: 0 0 30px rgba(0, 255, 179, 0.05), 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Editor IDE OS Top Header Bar */
+        .panel-header {
+            background: rgba(9, 13, 22, 0.6);
+            padding: 0px 1.25rem;
+            height: 48px;
+            border-bottom: 1px solid var(--border-glow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* IDE Tab Styling */
+        .tabs-container {
+            display: flex;
+            gap: 0.25rem;
+            height: 100%;
+            align-items: flex-end;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-premium);
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-bottom: -1px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            background: var(--bg-input);
+            border-color: var(--border-glow);
+            font-weight: 500;
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .window-actions {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+        .panel-header:hover .dot-r { background: var(--error); }
+        .panel-header:hover .dot-y { background: var(--warning); }
+        .panel-header:hover .dot-g { background: var(--primary); }
+
+        /* --- High-Fidelity Text Editor & Line Numbers --- */
+        .editor-wrapper {
+            display: flex;
+            flex: 1;
+            background: var(--bg-input);
+            position: relative;
+            min-height: 500px;
+        }
+
+        .line-numbers {
+            width: 48px;
+            padding: 1.25rem 0rem;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.15);
+            line-height: 1.6;
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            user-select: none;
+            background: rgba(5, 7, 15, 0.3);
+        }
+
+        .code-textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding: 1.25rem;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        /* --- Premium Custom Action Bar --- */
+        .action-bar {
+            padding: 1.25rem;
+            background: rgba(9, 13, 22, 0.6);
+            border-top: 1px solid var(--border-glow);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-execute {
+            background: linear-gradient(135deg, var(--primary), #00d494);
+            color: #030712;
+            border: none;
+            padding: 0.85rem 2rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition-premium);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-execute::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-execute:hover::before {
+            left: 100%;
+        }
+
+        .btn-execute:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 179, 0.6);
+        }
+
+        .btn-execute:active {
+            transform: translateY(1px);
+        }
+
+        /* --- Interactive Linux-Grade Virtual Terminal Console --- */
+        .terminal-container {
+            flex: 1;
+            background: #04060a;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .terminal-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .prompt-line {
+            display: flex;
+            gap: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .prompt-symbol {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* Stream log style objects */
+        .log-success {
+            color: var(--primary);
+            text-shadow: 0 0 8px rgba(0, 255, 179, 0.2);
+        }
+
+        .log-info {
+            color: #e2e8f0;
+        }
+
+        .log-warn {
+            color: var(--warning);
+            background: rgba(251, 191, 36, 0.03);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border-left: 2px solid var(--warning);
+        }
+
+        .log-err {
+            color: var(--error);
+            background: rgba(248, 113, 113, 0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border-left: 2px solid var(--error);
+        }
+
+        /* Empty State */
+        .empty-console-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            color: var(--text-muted);
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .empty-console-state span {
+            font-size: 1.5rem;
+            opacity: 0.4;
+        }
+
+        /* --- Fully Responsive Scaling Breakpoints --- */
+        @media (max-width: 1100px) {
+            .workspace {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+            header {
+                padding: 1rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <header>
+        <div class="logo-group">
+            <div class="logo-mark">ThunderJS ⚡</div>
+        </div>
+        
+        <div class="telemetry-strip">
+            <div class="metric">
+                <span class="metric-label">Engine Allocation</span>
+                <span class="metric-value" id="memMetric">4.12 MB</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Execution Delay</span>
+                <span class="metric-value" id="timeMetric">0.00 ms</span>
+            </div>
+            <div class="status-pill">
+                <div class="pulse-dot"></div>
+                READY
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-banner">
+        <h1>ThunderJS Runtime ⚡</h1>
+        <p>A Custom JavaScript Interpreter Built in Python</p>
+    </section>
+
+    <main class="workspace">
+        
+        <section class="panel">
+            <div class="panel-header">
+                <div class="tabs-container">
+                    <button class="tab active">main.js</button>
+                    <button class="tab" style="opacity: 0.5;">runtime.py</button>
+                    <button class="tab" style="opacity: 0.5;">translator.py</button>
+                </div>
+                <div class="window-actions">
+                    <div class="dot dot-r"></div>
+                    <div class="dot dot-y"></div>
+                    <div class="dot dot-g"></div>
+                </div>
+            </div>
+            
+            <div class="editor-wrapper">
+                <div class="line-numbers">
+                    1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12
+                </div>
+       <textarea
+    class="code-textarea"
+    spellcheck="false"
+    placeholder="// Example:
+console.log('Hello Thunder');
+
+Tip: Press Ctrl + Enter to Run ⚡">
+</textarea>
+            </div>
+            
+            <div class="action-bar">
+                <button class="btn-execute" id="executeBtn">
+                    <span>Run</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div class="tabs-container">
+                    <button class="tab active">stdout / terminal</button>
+                </div>
+            </div>
+            
+            <div class="terminal-container" id="terminalConsole">
+                <div class="empty-console-state" id="emptyState">
+                    <span>📟</span>
+                    <p font-family="var(--font-mono)">⚡ ThunderJS Runtime Ready ⚡<br>
+Press Run or Ctrl + Enter</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+const executeBtn = document.getElementById("executeBtn");
+const terminalConsole =
+    document.getElementById("terminalConsole");
+
+const emptyState =
+    document.getElementById("emptyState");
+
+const codeEditor =
+    document.querySelector(".code-textarea");
+
+const statusPill =
+    document.querySelector(".status-pill");
+
+const memMetric =
+    document.getElementById("memMetric");
+
+const timeMetric =
+    document.getElementById("timeMetric");
+
+
+function setStatus(status) {
+
+    statusPill.innerHTML = `
+        <div class="pulse-dot"></div>
+        ${status}
+    `;
+}
+
+
+async function runInterpreter() {
+
+    executeBtn.disabled = true;
+
+    executeBtn.innerHTML =
+        "<span>⚡ Executing...</span>";
+
+    setStatus("EXECUTING");
+
+    terminalConsole.innerHTML = "";
+
+    const startTime = performance.now();
+
+    try {
+
+        const response = await fetch("/run", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                code: codeEditor.value
+            })
+        });
+
+        const data = await response.json();
+
+        const executionTime =
+            (performance.now() - startTime)
+            .toFixed(2);
+
+        timeMetric.innerText =
+            executionTime + " ms";
+
+        memMetric.innerText =
+            (4 + Math.random())
+            .toFixed(2) + " MB";
+
+        const outputDiv =
+            document.createElement("div");
+
+        if (data.success) {
+
+            setStatus("SUCCESS");
+
+            outputDiv.innerHTML = `
+                <div class="prompt-line">
+                    <span class="prompt-symbol">></span>
+                    <span class="log-success">
+                        ${data.output
+                            .replace(/\n/g, "<br>")}
+                    </span>
+                </div>
+            `;
+
+        } else {
+
+            setStatus("ERROR");
+
+            outputDiv.innerHTML = `
+                <div class="prompt-line">
+                    <span class="prompt-symbol">></span>
+                    <span class="log-err">
+                        ${data.output}
+                    </span>
+                </div>
+            `;
+        }
+
+        terminalConsole.appendChild(outputDiv);
+
+        terminalConsole.scrollTop =
+            terminalConsole.scrollHeight;
+
+    } catch (error) {
+
+        setStatus("ERROR");
+
+        terminalConsole.innerHTML = `
+            <div class="prompt-line">
+                <span class="prompt-symbol">></span>
+                <span class="log-err">
+                    Failed to connect Flask backend
+                </span>
+            </div>
+        `;
+    }
+
+    executeBtn.disabled = false;
+
+    executeBtn.innerHTML =
+        "<span>Run</span>";
+}
+
+
+// Button click
+executeBtn.addEventListener(
+    "click",
+    runInterpreter
+);
+
+
+// Ctrl + Enter shortcut
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (e.ctrlKey &&
+            e.key === "Enter") {
+
+            runInterpreter();
+        }
+    }
+);
+</script>
+</body>
+</html>
