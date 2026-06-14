@@ -6,21 +6,50 @@ from runtime import build_runtime
 from translator import translate
 
 
-def run_javascript(js_source):
-    """Translate JavaScript source and execute it."""
+def repl():
+    print("Mini JS Interpreter REPL 🔥 (type exit to quit)\n")
+
+    runtime = build_runtime()
+
+    while True:
+        try:
+            js_source = input("JS > ").strip()
+
+            # 🔥 IMPORTANT: handle exit BEFORE anything else
+            if js_source.lower() == "exit":
+                print("Bye 👋")
+                break
+
+            if not js_source:
+                continue
+
+            python_source = translate(js_source)
+
+            exec(python_source, runtime)
+
+        except Exception as e:
+            print("Error:", e)
+
+def run_file(path):
+    with open(path, encoding="utf-8") as file:
+        js_source = file.read()
+
     python_source = translate(js_source)
     runtime = build_runtime()
     exec(python_source, runtime)
 
 
 def main():
-    if len(sys.argv) > 1:
-        with open(sys.argv[1], encoding="utf-8") as file:
-            js_source = file.read()
-    else:
-        js_source = sys.stdin.read()
+    if len(sys.argv) == 1:
+        repl()
+        return
 
-    run_javascript(js_source)
+    arg = sys.argv[1]
+
+    if arg == "--repl":
+        repl()
+    else:
+        run_file(arg)
 
 
 if __name__ == "__main__":
