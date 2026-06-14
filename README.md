@@ -74,7 +74,7 @@ Features:
 | 📄 File Mode | `python main.py file.js` | Run full programs |
 | 🧪 REPL Mode | `python main.py --repl` | Interactive testing |
 | 🌐 Web Mode | https://js-runtime-p4du.onrender.com/ | Browser-based IDE |
-```
+
 ---
 # 🏗️ Architecture
 
